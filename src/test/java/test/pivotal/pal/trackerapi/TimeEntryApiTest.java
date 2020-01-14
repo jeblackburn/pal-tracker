@@ -1,5 +1,7 @@
 package test.pivotal.pal.trackerapi;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.DocumentContext;
 import io.pivotal.pal.tracker.PalTrackerApplication;
 import io.pivotal.pal.tracker.TimeEntry;
@@ -24,6 +26,9 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = PalTrackerApplication.class, webEnvironment = RANDOM_PORT)
 public class TimeEntryApiTest {
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -75,7 +80,9 @@ public class TimeEntryApiTest {
 
 
         assertThat(readResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-        DocumentContext readJson = parse(readResponse.getBody());
+        String body = readResponse.getBody();
+        System.out.println("body = " + body);
+        DocumentContext readJson = parse(body);
         assertThat(readJson.read("$.id", Long.class)).isEqualTo(id);
         assertThat(readJson.read("$.projectId", Long.class)).isEqualTo(projectId);
         assertThat(readJson.read("$.userId", Long.class)).isEqualTo(userId);
@@ -126,5 +133,14 @@ public class TimeEntryApiTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
         return response.getBody().getId();
+    }
+
+    @Test
+    public void shouldSerializeWithJackson() throws JsonProcessingException {
+        TimeEntry timeEntry = new TimeEntry(99L, 123L, LocalDate.parse("2019-12-12"), 9);
+        String serialized = objectMapper.writeValueAsString(timeEntry);
+        System.out.println("serialized = " + serialized);
+        TimeEntry done = objectMapper.readValue(serialized, TimeEntry.class);
+        assertThat(timeEntry).isEqualTo(done);
     }
 }

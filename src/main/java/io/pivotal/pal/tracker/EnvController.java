@@ -25,7 +25,6 @@ public class EnvController {
         this.cfInstanceAddr = cfInstanceAddr;
     }
 
-//    @GetMapping("/env")
     public Map<String, String> getEnv() {
         return Map.of(
                 "PORT", port,
@@ -34,5 +33,4 @@ public class EnvController {
                 "CF_INSTANCE_ADDR", cfInstanceAddr);
 
     }
-
 }
