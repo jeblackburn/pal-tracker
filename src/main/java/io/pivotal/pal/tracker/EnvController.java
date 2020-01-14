@@ -1,12 +1,11 @@
 package io.pivotal.pal.tracker;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
-@RestController
+@Component
 public class EnvController {
 
     private String port;
@@ -26,7 +25,7 @@ public class EnvController {
         this.cfInstanceAddr = cfInstanceAddr;
     }
 
-    @GetMapping("/env")
+//    @GetMapping("/env")
     public Map<String, String> getEnv() {
         return Map.of(
                 "PORT", port,
