@@ -8,6 +8,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @RequiredArgsConstructor
+@Builder(toBuilder = true)
 public class TimeEntry {
     private Long id;
     @NonNull private Long projectId;

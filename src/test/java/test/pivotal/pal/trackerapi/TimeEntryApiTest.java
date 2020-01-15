@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.DocumentContext;
 import io.pivotal.pal.tracker.PalTrackerApplication;
 import io.pivotal.pal.tracker.TimeEntry;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
@@ -28,7 +30,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 public class TimeEntryApiTest {
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private JdbcTemplate jdbcTemplate;
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -36,6 +38,11 @@ public class TimeEntryApiTest {
     private final long projectId = 123L;
     private final long userId = 456L;
     private TimeEntry timeEntry = new TimeEntry(projectId, userId, LocalDate.parse("2017-01-08"), 8);
+
+    @Before
+    public void setUp() {
+        jdbcTemplate.execute("delete from time_entries");
+    }
 
     @Test
     public void testCreate() throws Exception {
@@ -133,14 +140,5 @@ public class TimeEntryApiTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
         return response.getBody().getId();
-    }
-
-    @Test
-    public void shouldSerializeWithJackson() throws JsonProcessingException {
-        TimeEntry timeEntry = new TimeEntry(99L, 123L, LocalDate.parse("2019-12-12"), 9);
-        String serialized = objectMapper.writeValueAsString(timeEntry);
-        System.out.println("serialized = " + serialized);
-        TimeEntry done = objectMapper.readValue(serialized, TimeEntry.class);
-        assertThat(timeEntry).isEqualTo(done);
     }
 }

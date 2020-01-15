@@ -2,13 +2,12 @@ package io.pivotal.pal.tracker;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.servlet.function.RequestPredicates;
 import org.springframework.web.servlet.function.RouterFunction;
 import org.springframework.web.servlet.function.ServerResponse;
 
+import javax.sql.DataSource;
+
 import static org.springframework.web.servlet.function.RequestPredicates.GET;
-import static org.springframework.web.servlet.function.RequestPredicates.POST;
 import static org.springframework.web.servlet.function.RouterFunctions.route;
 import static org.springframework.web.servlet.function.ServerResponse.ok;
 
@@ -29,8 +28,8 @@ public class WebConfiguration {
 //    }
 
     @Bean
-    public TimeEntryRepository timeEntryRepository() {
-        return new InMemoryTimeEntryRepository();
+    public TimeEntryRepository timeEntryRepository(DataSource dataSource) {
+        return new JdbcTimeEntryRepository(dataSource);
     }
 
 }
