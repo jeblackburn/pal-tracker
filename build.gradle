@@ -15,7 +15,6 @@ buildscript {
 
 plugins {
     id "java"
-    id "io.freefair.lombok" version "4.1.6"
 }
 
 apply plugin: 'org.springframework.boot'
@@ -26,8 +25,6 @@ repositories {
 
 dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
-    compileOnly 'org.projectlombok:lombok:1.18.10'
-    annotationProcessor 'org.projectlombok:lombok:1.18.10'
     testImplementation "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
 }
 
